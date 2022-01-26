@@ -1,27 +1,20 @@
 param location string = resourceGroup().location
 param environmentName string = 'env-${uniqueString(resourceGroup().id)}'
-//param apimName string = 'store-api-mgmt-${uniqueString(resourceGroup().id)}'
-param minReplicas int = 0
-param nodeImage string = 'nginx'
-param nodePort int = 3000
-param isNodeExternalIngress bool = true
-param pythonImage string = 'nginx'
-param pythonPort int = 5000
-param isPythonExternalIngress bool = false
-param goImage string = 'nginx'
-param goPort int = 8050
-param isGoExternalIngress bool = false
-param containerRegistry string
-param containerRegistryUsername string
 
-@secure()
-param containerRegistryPassword string
+// store service
+param storeMinReplicas int = 1
+param storeImage string = 'repo/store-service:v1'
+param storePort int = 3000
+param isStoreExternalIngress bool = true
 
-var nodeServiceAppName = 'node-app'
-var pythonServiceAppName = 'python-app'
-var goServiceAppName = 'go-app'
+// param pythonImage string = 'nginx'
+// param pythonPort int = 5000
+// param isPythonExternalIngress bool = false
+// param goImage string = 'nginx'
+// param goPort int = 8050
+// param isGoExternalIngress bool = false
 
-// // container app environment
+// container app environment
 module environment 'environment.bicep' = {
   name: 'container-app-environment'
   params: {
@@ -30,7 +23,7 @@ module environment 'environment.bicep' = {
   }
 }
 
-// create cosmosdb
+// cosmosdb
 module cosmosdb 'cosmosdb.bicep' = {
   name: 'cosmosdb'
   params: {
@@ -39,131 +32,22 @@ module cosmosdb 'cosmosdb.bicep' = {
   }
 }
 
-// create api management
-// module apim 'api-management.bicep' = {
-//   name: 'apim'
-//   params: {
-//     apimName: apimName
-//     publisherName: 'Contoso Store'
-//     publisherEmail: 'demo@example.com'
-//     apimLocation: location
-//   }
-// }
-
-// Python App
-module pythonService 'container-http.bicep' = {
-  name: pythonServiceAppName
+// container app: store-service
+module storeService 'store-service.bicep' = {
+  name: 'store-service'
   params: {
     location: location
-    containerAppName: pythonServiceAppName
     environmentId: environment.outputs.environmentId
-    containerImage: pythonImage
-    containerPort: pythonPort
-    isExternalIngress: isPythonExternalIngress
-    minReplicas: minReplicas
-    containerRegistry: containerRegistry
-    containerRegistryUsername: containerRegistryUsername
-    containerRegistryPassword: containerRegistryPassword
-    daprComponents: [
-      {
-        name: 'orders'
-        type: 'state.azure.cosmosdb'
-        version: 'v1'
-        metadata: [
-          {
-            name: 'url'
-            value: cosmosdb.outputs.documentEndpoint
-          }
-          {
-            name: 'database'
-            value: 'ordersDb'
-          }
-          {
-            name: 'collection'
-            value: 'orders'
-          }
-          {
-            name: 'masterkey'
-            secretRef: 'masterkey'
-          }
-        ]
-      }
-    ]
-    secrets: [
-      {
-        name: 'docker-password'
-        value: containerRegistryPassword
-      }
-      {
-        name: 'masterkey'
-        value: cosmosdb.outputs.primaryMasterKey
-      }
-    ]
+    containerImage: storeImage
+    containerPort: storePort
+    isExternalIngress: isStoreExternalIngress
+    minReplicas: storeMinReplicas
   }
 }
 
-
-// Go App
-module goService 'container-http.bicep' = {
-  name: goServiceAppName
-  params: {
-    location: location
-    containerAppName: goServiceAppName
-    environmentId: environment.outputs.environmentId
-    containerImage: goImage
-    containerPort: goPort
-    isExternalIngress: isGoExternalIngress
-    minReplicas: minReplicas
-    containerRegistry: containerRegistry
-    containerRegistryUsername: containerRegistryUsername
-    containerRegistryPassword: containerRegistryPassword
-  }
-}
-
-
-// node App
-module nodeService 'container-http.bicep' = {
-  name: nodeServiceAppName
-  params: {
-    location: location
-    containerAppName: nodeServiceAppName
-    environmentId: environment.outputs.environmentId
-    containerImage: nodeImage
-    containerPort: nodePort
-    isExternalIngress: isNodeExternalIngress
-    minReplicas: minReplicas
-    containerRegistry: containerRegistry
-    containerRegistryUsername: containerRegistryUsername
-    containerRegistryPassword: containerRegistryPassword
-    env: [
-      {
-        name: 'ORDER_SERVICE_NAME'
-        value: pythonServiceAppName
-      }
-      {
-        name: 'INVENTORY_SERVICE_NAME'
-        value: goServiceAppName
-      }
-    ]
-  }
-}
-
-// module apimStoreApi 'api-management-api.bicep' = {
-//   name: 'store-api'
-//   params: {
-//     apiName: 'store-api'
-//     apimInstanceName: apimName
-//     apiEndPointURL: 'https://${nodeService.outputs.fqdn}/swagger.json'
-//   }
-//   dependsOn: [
-//     apim
-//     nodeService
-//   ]
-// }
-
-output nodeFqdn string = nodeService.outputs.fqdn
-output pythonFqdn string = pythonService.outputs.fqdn
-output goFqdn string = goService.outputs.fqdn
+output nodeFqdn string = storeService.outputs.fqdn
+//output pythonFqdn string = pythonService.outputs.fqdn
+//output goFqdn string = goService.outputs.fqdn
 output environmentId string = environment.outputs.environmentId
 output defaultDomain string = environment.outputs.defaultDomain
 output appInsightsInstrumentationKey string = environment.outputs.appInsightsInstrumentationKey

@@ -9,21 +9,6 @@ param containerRegistryUsername string
 param env array = []
 param daprComponents array = []
 param minReplicas int = 0
-param secrets array = [
-  {
-    name: 'docker-password'
-    value: containerRegistryPassword
-  }
-]
-
-@allowed([
-  'multiple'
-  'single'
-])
-param revisionMode string = 'multiple'
-
-@secure()
-param containerRegistryPassword string
 
 var cpu = json('0.5')
 var memory = '500Mi'
@@ -37,7 +22,7 @@ resource containerApp 'Microsoft.Web/containerApps@2021-03-01' = {
     kubeEnvironmentId: environmentId
     configuration: {
       // activeRevisionsMode: revisionMode
-      secrets: secrets
+      // secrets: secrets
       registries: [
         {
           server: containerRegistry

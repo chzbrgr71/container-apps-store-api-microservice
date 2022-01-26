@@ -3,27 +3,31 @@
 https://github.com/chzbrgr71/container-apps-store-api-microservice
 https://docs.microsoft.com/en-us/azure/container-apps/overview
 
-#### Build images
+#### Build and Push container images
 
 ```bash
 
 export GITHUB_CR_PAT='' # in zsh profile
-
 docker login ghcr.io -u chzbrgr71 -p $GITHUB_CR_PAT
 
-docker build -t chzbrgr71/node-service:v1 ./node-service
-docker build -t chzbrgr71/go-service:v1 ./go-service
-docker build -t chzbrgr71/python-service:v1 ./python-service
+export TAG='v1'
 
-docker tag chzbrgr71/node-service:v1 ghcr.io/chzbrgr71/node-service:v1
-docker push ghcr.io/chzbrgr71/node-service:v1
+docker build -t chzbrgr71/store-service:$TAG ./store-service
+docker build -t chzbrgr71/inventory-service:$TAG ./inventory-service
+docker build -t chzbrgr71/order-service:$TAG ./order-service
 
-docker tag chzbrgr71/go-service:v1 ghcr.io/chzbrgr71/go-service:v1
-docker push ghcr.io/chzbrgr71/go-service:v1
+docker tag chzbrgr71/store-service:$TAG ghcr.io/chzbrgr71/store-service:$TAG
+docker tag chzbrgr71/inventory-service:$TAG ghcr.io/chzbrgr71/inventory-service:$TAG
+docker tag chzbrgr71/order-service:$TAG ghcr.io/chzbrgr71/order-service:$TAG
 
-docker tag chzbrgr71/python-service:v1 ghcr.io/chzbrgr71/python-service:v1
-docker push ghcr.io/chzbrgr71/python-service:v1
+docker push ghcr.io/chzbrgr71/store-service:$TAG
+docker push ghcr.io/chzbrgr71/inventory-service:$TAG
+docker push ghcr.io/chzbrgr71/order-service:$TAG
+
 ```
+
+> Note: Manually mark images as public here: https://github.com/chzbrgr71?tab=packages
+
 
 #### Deploy via Bicep
 
@@ -40,21 +44,18 @@ az deployment group create \
     --name demo-app-deploy \
     --resource-group $RG \
     --only-show-errors \
-    -f ./deploy/main.bicep \
-    -p \
-    minReplicas=1 \
-    nodeImage='ghcr.io/chzbrgr71/node-service:v1' \
-    nodePort=3000 \
-    isNodeExternalIngress=true \
-    pythonImage='ghcr.io/chzbrgr71/python-service:v1' \
-    pythonPort=5000 \
-    isPythonExternalIngress=false \
-    goImage='ghcr.io/chzbrgr71/go-service:v1' \
-    goPort=8050 \
-    isGoExternalIngress=false \
-    containerRegistry=ghcr.io \
-    containerRegistryUsername=chzbrgr71 \
-    containerRegistryPassword=$GITHUB_CR_PAT
+    --template-file ./deploy/main.bicep \
+    --parameters \
+        minReplicas=1 \
+        nodeImage='ghcr.io/chzbrgr71/store-service:v1' \
+        nodePort=3000 \
+        isNodeExternalIngress=true \
+        pythonImage='ghcr.io/chzbrgr71/order-service:v1' \
+        pythonPort=5000 \
+        isPythonExternalIngress=false \
+        goImage='ghcr.io/chzbrgr71/inventory-service:v1' \
+        goPort=8050 \
+        isGoExternalIngress=false
 
 az deployment group show -g $RG -n demo-app-deploy -o json --query properties.outputs 
  
