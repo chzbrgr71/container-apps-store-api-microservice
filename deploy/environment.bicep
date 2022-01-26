@@ -49,3 +49,6 @@ resource environment 'Microsoft.Web/kubeEnvironments@2021-02-01' = {
 
 output location string = location
 output environmentId string = environment.id
+output defaultDomain string = environment.properties.defaultDomain
+output appInsightsInstrumentationKey string = appInsights.properties.InstrumentationKey
+output logAnalyticsName string = logAnalyticsWorkspaceName

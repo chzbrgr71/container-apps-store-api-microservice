@@ -1,6 +1,6 @@
 param location string = resourceGroup().location
 param environmentName string = 'env-${uniqueString(resourceGroup().id)}'
-param apimName string = 'store-api-mgmt-${uniqueString(resourceGroup().id)}'
+//param apimName string = 'store-api-mgmt-${uniqueString(resourceGroup().id)}'
 param minReplicas int = 0
 param nodeImage string = 'nginx'
 param nodePort int = 3000
@@ -40,15 +40,15 @@ module cosmosdb 'cosmosdb.bicep' = {
 }
 
 // create api management
-module apim 'api-management.bicep' = {
-  name: 'apim'
-  params: {
-    apimName: apimName
-    publisherName: 'Contoso Store'
-    publisherEmail: 'demo@example.com'
-    apimLocation: location
-  }
-}
+// module apim 'api-management.bicep' = {
+//   name: 'apim'
+//   params: {
+//     apimName: apimName
+//     publisherName: 'Contoso Store'
+//     publisherEmail: 'demo@example.com'
+//     apimLocation: location
+//   }
+// }
 
 // Python App
 module pythonService 'container-http.bicep' = {
@@ -148,20 +148,23 @@ module nodeService 'container-http.bicep' = {
   }
 }
 
-module apimStoreApi 'api-management-api.bicep' = {
-  name: 'store-api'
-  params: {
-    apiName: 'store-api'
-    apimInstanceName: apimName
-    apiEndPointURL: 'https://${nodeService.outputs.fqdn}/swagger.json'
-  }
-  dependsOn: [
-    apim
-    nodeService
-  ]
-}
+// module apimStoreApi 'api-management-api.bicep' = {
+//   name: 'store-api'
+//   params: {
+//     apiName: 'store-api'
+//     apimInstanceName: apimName
+//     apiEndPointURL: 'https://${nodeService.outputs.fqdn}/swagger.json'
+//   }
+//   dependsOn: [
+//     apim
+//     nodeService
+//   ]
+// }
 
 output nodeFqdn string = nodeService.outputs.fqdn
 output pythonFqdn string = pythonService.outputs.fqdn
 output goFqdn string = goService.outputs.fqdn
-output apimFqdn string = apim.outputs.fqdn
+output environmentId string = environment.outputs.environmentId
+output defaultDomain string = environment.outputs.defaultDomain
+output appInsightsInstrumentationKey string = environment.outputs.appInsightsInstrumentationKey
+output logAnalyticsName string = environment.outputs.logAnalyticsName
