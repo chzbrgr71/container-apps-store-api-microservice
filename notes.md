@@ -33,9 +33,9 @@ docker push ghcr.io/chzbrgr71/order-service:$TAG
 
 ```bash
 
-export PREFIX='briar'
+export PREFIX=$USER
 export SUFFIX=$RANDOM
-export RG=$PREFIX-container-app-demo-$SUFFIX
+export RG=$PREFIX-container-app-$SUFFIX
 export LOCATION='canadacentral'
 
 az group create -n $RG -l $LOCATION
@@ -46,16 +46,18 @@ az deployment group create \
     --only-show-errors \
     --template-file ./deploy/main.bicep \
     --parameters \
-        minReplicas=1 \
-        nodeImage='ghcr.io/chzbrgr71/store-service:v1' \
-        nodePort=3000 \
-        isNodeExternalIngress=true \
-        pythonImage='ghcr.io/chzbrgr71/order-service:v1' \
-        pythonPort=5000 \
-        isPythonExternalIngress=false \
-        goImage='ghcr.io/chzbrgr71/inventory-service:v1' \
-        goPort=8050 \
-        isGoExternalIngress=false
+        storeMinReplicas=1 \
+        storeImage='ghcr.io/chzbrgr71/store-service:v1' \
+        storePort=3000 \
+        isStoreExternalIngress=true \
+        orderMinReplicas=1 \
+        orderImage='ghcr.io/chzbrgr71/order-service:v1' \
+        orderPort=5000 \
+        isOrderExternalIngress=true \
+        inventoryMinReplicas=1 \
+        inventoryImage='ghcr.io/chzbrgr71/inventory-service:v1' \
+        inventoryPort=8050 \
+        isInventoryExternalIngress=true
 
 az deployment group show -g $RG -n demo-app-deploy -o json --query properties.outputs 
  
@@ -63,14 +65,33 @@ az deployment group show -g $RG -n demo-app-deploy -o json --query properties.ou
 
 #### Test the app
 
-http://node-app.happyisland-133ccc57.canadacentral.azurecontainerapps.io
+http://node-app.proudmushroom-7f5945cd.canadacentral.azurecontainerapps.io
 
-https://node-app.happyisland-133ccc57.canadacentral.azurecontainerapps.io/order?id=1
-https://node-app.happyisland-133ccc57.canadacentral.azurecontainerapps.io/order?id=undefined 
+https://node-app.proudmushroom-7f5945cd.canadacentral.azurecontainerapps.io/order?id=1
+https://node-app.proudmushroom-7f5945cd.canadacentral.azurecontainerapps.io/order?id=undefined 
 
 Order payload:
-{"id":"2","item":"Ski Carrier","location":"Seattle","priority":"Standard"}
+{"id":"1","item":"Thule Roof Rack System","location":"Denver","priority":"Standard"}
+{"id":"2","item":"Ski carrier","location":"Denver","priority":"Standard"}
+{"id":"3","item":"Bike carrier","location":"Denver","priority":"Standard"}
+{"id":"4","item":"Kayak carrier","location":"Denver","priority":"Standard"}
+{"id":"5","item":"Rack locking system","location":"Denver","priority":"Standard"}
 
+```bash
+
+export DOMAINSUFFIX=
+${DOMAINSUFFIX}
+
+curl -X GET "http://inventory-app.happyisland-133ccc57.canadacentral.azurecontainerapps.io/inventory"
+
+curl --header "Content-Type: application/json" \
+  --request POST \
+  --data '{"id":"2","item":"Ski Carrier","location":"Seattle","priority":"Standard"}' \
+  https://node-app.happyisland-133ccc57.canadacentral.azurecontainerapps.io/order?id=undefined 
+
+
+while true; do curl -X GET "https://strava-app-7vrxff5djq-uc.a.run.app/athlete/profile" && echo "\ntesting..." ; sleep 3; done
+```
 
 #### Logs
 

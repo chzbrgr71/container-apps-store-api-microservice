@@ -7,12 +7,17 @@ param storeImage string = 'repo/store-service:v1'
 param storePort int = 3000
 param isStoreExternalIngress bool = true
 
-// param pythonImage string = 'nginx'
-// param pythonPort int = 5000
-// param isPythonExternalIngress bool = false
-// param goImage string = 'nginx'
-// param goPort int = 8050
-// param isGoExternalIngress bool = false
+// order service
+param orderMinReplicas int = 1
+param orderImage string = 'repo/order-service:v1'
+param orderPort int = 5000
+param isOrderExternalIngress bool = false
+
+// inventory service
+param inventoryMinReplicas int = 1
+param inventoryImage string = 'repo/inventory-service:v1'
+param inventoryPort int = 8050
+param isInventoryExternalIngress bool = false
 
 // container app environment
 module environment 'environment.bicep' = {
@@ -38,16 +43,83 @@ module storeService 'store-service.bicep' = {
   params: {
     location: location
     environmentId: environment.outputs.environmentId
-    containerImage: storeImage
-    containerPort: storePort
-    isExternalIngress: isStoreExternalIngress
-    minReplicas: storeMinReplicas
+    storeImage: storeImage
+    storePort: storePort
+    isStoreExternalIngress: isStoreExternalIngress
+    storeMinReplicas: storeMinReplicas
+    env: [
+      {
+        name: 'ORDER_SERVICE_NAME'
+        value: 'order-service'
+      }
+      {
+        name: 'INVENTORY_SERVICE_NAME'
+        value: 'inventory-service'
+      }
+    ]
   }
 }
 
-output nodeFqdn string = storeService.outputs.fqdn
-//output pythonFqdn string = pythonService.outputs.fqdn
-//output goFqdn string = goService.outputs.fqdn
+// container app: order-service
+module orderService 'order-service.bicep' = {
+  name: 'order-service'
+  params: {
+    location: location
+    environmentId: environment.outputs.environmentId
+    orderImage: orderImage
+    orderPort: orderPort
+    isOrderExternalIngress: isOrderExternalIngress
+    orderMinReplicas: orderMinReplicas
+    secrets: [
+      {
+        name: 'masterkey'
+        value: cosmosdb.outputs.primaryMasterKey
+      }
+    ]    
+    daprComponents: [
+      {
+        name: 'orders'
+        type: 'state.azure.cosmosdb'
+        version: 'v1'
+        metadata: [
+          {
+            name: 'url'
+            value: cosmosdb.outputs.documentEndpoint
+          }
+          {
+            name: 'database'
+            value: 'ordersDb'
+          }
+          {
+            name: 'collection'
+            value: 'orders'
+          }
+          {
+            name: 'masterkey'
+            secretRef: 'masterkey'
+          }
+        ]
+      }
+    ]
+  }
+}
+
+// container app: inventory-service
+module inventoryService 'inventory-service.bicep' = {
+  name: 'inventory-service'
+  params: {
+    location: location
+    environmentId: environment.outputs.environmentId
+    inventoryImage: inventoryImage
+    inventoryPort: inventoryPort
+    isInventoryExternalIngress: isInventoryExternalIngress
+    inventoryMinReplicas: inventoryMinReplicas
+  }
+}
+
+output storeFqdn string = storeService.outputs.fqdn
+output orderFqdn string = orderService.outputs.fqdn
+output inventoryFqdn string = inventoryService.outputs.fqdn
 output environmentId string = environment.outputs.environmentId
 output defaultDomain string = environment.outputs.defaultDomain
 output appInsightsInstrumentationKey string = environment.outputs.appInsightsInstrumentationKey

@@ -7,3 +7,11 @@ dotnet-service/Properties/
 node_modules/
 go-service/container-go-hello-mux
 .tye/
+
+# container apps demo
+.DS_Store
+
+id_rsa
+id_rsa.pub
+
+outputs/

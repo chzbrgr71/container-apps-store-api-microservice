@@ -1,11 +1,11 @@
 param location string = resourceGroup().location
 param environmentId string
-param containerImage string
-param containerPort int
-param isExternalIngress bool
+param storeImage string
+param storePort int
+param isStoreExternalIngress bool
 param env array = []
 param daprComponents array = []
-param minReplicas int = 0
+param storeMinReplicas int = 0
 
 var containerAppName = 'store-service'
 var cpu = json('0.5')
@@ -21,8 +21,8 @@ resource storeContainerApp 'Microsoft.Web/containerApps@2021-03-01' = {
       // activeRevisionsMode: revisionMode
       // secrets: secrets
       ingress: {
-        external: isExternalIngress
-        targetPort: containerPort
+        external: isStoreExternalIngress
+        targetPort: storePort
         transport: 'auto'
         // traffic: [
         //   {
@@ -36,7 +36,7 @@ resource storeContainerApp 'Microsoft.Web/containerApps@2021-03-01' = {
       // revisionSuffix: 'somevalue'
       containers: [
         {
-          image: containerImage
+          image: storeImage
           name: containerAppName
           env: env
           // resources: {
@@ -46,7 +46,7 @@ resource storeContainerApp 'Microsoft.Web/containerApps@2021-03-01' = {
         }
       ]
       scale: {
-        minReplicas: minReplicas
+        minReplicas: storeMinReplicas
       //  maxReplicas: 10
       //   rules: [{
       //     name: 'httpscale'
@@ -60,7 +60,7 @@ resource storeContainerApp 'Microsoft.Web/containerApps@2021-03-01' = {
       }
       dapr: {
         enabled: true
-        appPort: containerPort
+        appPort: storePort
         appId: containerAppName
         components: daprComponents
       }
