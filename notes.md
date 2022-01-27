@@ -65,10 +65,10 @@ az deployment group show -g $RG -n demo-app-deploy -o json --query properties.ou
 
 #### Test the app
 
-http://node-app.proudmushroom-7f5945cd.canadacentral.azurecontainerapps.io
+http://store-service.kindsea-fb0aa535.canadacentral.azurecontainerapps.io
 
-https://node-app.proudmushroom-7f5945cd.canadacentral.azurecontainerapps.io/order?id=1
-https://node-app.proudmushroom-7f5945cd.canadacentral.azurecontainerapps.io/order?id=undefined 
+https://store-service.kindsea-fb0aa535.canadacentral.azurecontainerapps.io/order?id=1
+https://store-service.kindsea-fb0aa535.canadacentral.azurecontainerapps.io/order?id=undefined 
 
 Order payload:
 {"id":"1","item":"Thule Roof Rack System","location":"Denver","priority":"Standard"}
@@ -79,15 +79,16 @@ Order payload:
 
 ```bash
 
-export DOMAINSUFFIX=
-${DOMAINSUFFIX}
+export DOMAINSUFFIX=kindsea-fb0aa535.canadacentral.azurecontainerapps.io
 
-curl -X GET "http://inventory-app.happyisland-133ccc57.canadacentral.azurecontainerapps.io/inventory"
+echo "curl -X GET http://store-service.${DOMAINSUFFIX}/order?id=1"
+
+curl -X GET "http://inventory-app.kindsea-fb0aa535.canadacentral.azurecontainerapps.io/inventory"
 
 curl --header "Content-Type: application/json" \
   --request POST \
   --data '{"id":"2","item":"Ski Carrier","location":"Seattle","priority":"Standard"}' \
-  https://node-app.happyisland-133ccc57.canadacentral.azurecontainerapps.io/order?id=undefined 
+  https://store-service.kindsea-fb0aa535.canadacentral.azurecontainerapps.io/order?id=undefined  
 
 
 while true; do curl -X GET "https://strava-app-7vrxff5djq-uc.a.run.app/athlete/profile" && echo "\ntesting..." ; sleep 3; done

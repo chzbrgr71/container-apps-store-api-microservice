@@ -2,8 +2,6 @@
 
 This is a sample microservice solution for Azure Container Apps.  It will create a series of microservices for managing orders and inventory. Dapr is used to secure communication and calls between services and Azure Cosmos DB is created alongside the microservices.
 
-The entire solution is configured with [GitHub Actions](https://github.com/features/actions) and [Bicep](https://docs.microsoft.com/azure/azure-resource-manager/bicep/overview) for CI/CD.
-
 > Note: This solution is a fork from the original. It's been changed a lot, but thanks to the original team who put this together!
 
 
@@ -11,20 +9,17 @@ The entire solution is configured with [GitHub Actions](https://github.com/featu
 
 Deployment is done via Bicep with a simple bash script to get you started. You can fork the repo and run the below script in bash or GitHub Codespaces. 
 
-```bash
+Just run the `./start.sh` script to deploy everything. You can edit the `LOCATION` variable in the script if needed.
 
 
-
-```
-
-## Building container images
+## Building container images (optional)
 
 ```bash
 
-export GITHUB_CR_PAT='' # in zsh profile
+export GITHUB_CR_PAT='' # set in bash profile
 docker login ghcr.io -u chzbrgr71 -p $GITHUB_CR_PAT
 
-export TAG='v1'
+export TAG='v1.0'
 
 docker build -t chzbrgr71/store-service:$TAG ./store-service
 docker build -t chzbrgr71/inventory-service:$TAG ./inventory-service

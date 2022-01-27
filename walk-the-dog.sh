@@ -1,19 +1,16 @@
-
-export RG_NAME=$1
+export RG=$1
 export LOCATION=$2
 export SUFFIX=$3
 
-start_time=$(date +%s)
-
 # show all params
-echo '****************************************************'
+echo '***************************************************************'
 echo 'Starting Container Apps Demo deployment'
 echo ''
 echo 'Parameters:'
 echo 'LOCATION: ' $LOCATION
-echo 'RG_NAME: ' $RG_NAME
+echo 'RG_NAME: ' $RG
 echo 'LOGFILE_NAME: ' $LOGFILE_NAME
-echo '****************************************************'
+echo '***************************************************************'
 echo ''
 
 # Check for Azure login
@@ -38,9 +35,9 @@ az group create -n $RG -l $LOCATION
 
 # Bicep deployment
 echo ''
-echo '****************************************************'
+echo '***************************************************************'
 echo 'Starting Bicep deployment of resources'
-echo '****************************************************'
+echo '***************************************************************'
 
 az deployment group create \
     --name demo-app-deploy \
@@ -64,19 +61,24 @@ az deployment group create \
 # Deployment outputs
 echo ''
 echo 'Saving bicep outputs to a file'
-az deployment group show -g $RG -n demo-app-deploy -o json --query properties.outputs > "./outputs/$RG_NAME-bicep-outputs.json"
+az deployment group show -g $RG -n demo-app-deploy -o json --query properties.outputs > "./outputs/bicep-outputs-$RG.json"
+
+export CONTAINER_APPS_DOMAIN=$(cat ./outputs/bicep-outputs-$RG.json | jq -r .defaultDomain.value)
+export STORE_URL="http://"$(cat ./outputs/bicep-outputs-$RG.json | jq -r .storeFqdn.value)
+export ORDER_URL="http://"$(cat ./outputs/bicep-outputs-$RG.json | jq -r .orderFqdn.value)
+export INVENTORY_URL="http://"$(cat ./outputs/bicep-outputs-$RG.json | jq -r .inventoryFqdn.value)
+export LOG_ANALYTICS=$(cat ./outputs/bicep-outputs-$RG.json | jq -r .logAnalyticsName.value)
 
 echo ''
-echo '****************************************************'
+echo '***************************************************************'
 echo 'Demo successfully deployed'
 echo ''
 echo 'Details:'
 echo ''
+echo 'Container Apps Env Domain: ' $CONTAINER_APPS_DOMAIN
+echo 'Store: ' $STORE_URL
+echo 'Order API: ' $ORDER_URL
+echo 'Inventory API: ' $INVENTORY_URL
+echo 'Log Analytics Name: ' $LOG_ANALYTICS
 echo ''
-echo '****************************************************'    
-
-# elapsed time with second resolution
-echo ''
-end_time=$(date +%s)
-elapsed=$(( end_time - start_time ))
-eval "echo Script elapsed time: $(date -ud "@$elapsed" +'$((%s/3600/24)) days %H hours %M minutes %S seconds')"
+echo '***************************************************************'   
