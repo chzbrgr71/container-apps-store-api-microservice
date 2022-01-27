@@ -88,7 +88,7 @@ curl -X GET "http://inventory-app.kindsea-fb0aa535.canadacentral.azurecontainera
 curl --header "Content-Type: application/json" \
   --request POST \
   --data '{"id":"2","item":"Ski Carrier","location":"Seattle","priority":"Standard"}' \
-  https://store-service.kindsea-fb0aa535.canadacentral.azurecontainerapps.io/order?id=undefined  
+  https://store-service.ambitiousocean-857a519b.canadacentral.azurecontainerapps.io/order?id=undefined  
 
 
 while true; do curl -X GET "https://strava-app-7vrxff5djq-uc.a.run.app/athlete/profile" && echo "\ntesting..." ; sleep 3; done
@@ -97,24 +97,23 @@ while true; do curl -X GET "https://strava-app-7vrxff5djq-uc.a.run.app/athlete/p
 #### Logs
 
 ```bash
-export RG='briar-container-app-demo-28548'
-export LOG_ANALYTICS_WORKSPACE='logs-env-k53vvbq5z5zui'
-export APP='node-app'
+export RG='brianr-container-app-demo-2305'
+export LOG_ANALYTICS_WORKSPACE='logs-env-wdogdjsbuok3c'
 
 export LOG_ANALYTICS_WORKSPACE_CLIENT_ID=`az monitor log-analytics workspace show --query customerId -g $RG -n $LOG_ANALYTICS_WORKSPACE --out tsv`
 
 az monitor log-analytics query \
   --workspace $LOG_ANALYTICS_WORKSPACE_CLIENT_ID \
-  --analytics-query "ContainerAppConsoleLogs_CL | where ContainerAppName_s == 'node-app' | project ContainerAppName_s, Log_s, TimeGenerated " \
+  --analytics-query "ContainerAppConsoleLogs_CL | where ContainerAppName_s == 'store-service' | project ContainerAppName_s, Log_s, TimeGenerated " \
   --out table
 
 az monitor log-analytics query \
   --workspace $LOG_ANALYTICS_WORKSPACE_CLIENT_ID \
-  --analytics-query "ContainerAppConsoleLogs_CL | where ContainerAppName_s == 'python-app' | project ContainerAppName_s, Log_s, TimeGenerated " \
+  --analytics-query "ContainerAppConsoleLogs_CL | where ContainerAppName_s == 'order-service' | project ContainerAppName_s, Log_s, TimeGenerated " \
   --out table
 
 az monitor log-analytics query \
   --workspace $LOG_ANALYTICS_WORKSPACE_CLIENT_ID \
-  --analytics-query "ContainerAppConsoleLogs_CL | where ContainerAppName_s == 'go-app' | project ContainerAppName_s, Log_s, TimeGenerated " \
+  --analytics-query "ContainerAppConsoleLogs_CL | where ContainerAppName_s == 'inventory-service' | project ContainerAppName_s, Log_s, TimeGenerated " \
   --out table
 ```

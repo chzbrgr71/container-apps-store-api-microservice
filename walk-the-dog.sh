@@ -8,7 +8,7 @@ echo 'Starting Container Apps Demo deployment'
 echo ''
 echo 'Parameters:'
 echo 'LOCATION: ' $LOCATION
-echo 'RG_NAME: ' $RG
+echo 'RG: ' $RG
 echo 'LOGFILE_NAME: ' $LOGFILE_NAME
 echo '***************************************************************'
 echo ''
@@ -64,9 +64,9 @@ echo 'Saving bicep outputs to a file'
 az deployment group show -g $RG -n demo-app-deploy -o json --query properties.outputs > "./outputs/bicep-outputs-$RG.json"
 
 export CONTAINER_APPS_DOMAIN=$(cat ./outputs/bicep-outputs-$RG.json | jq -r .defaultDomain.value)
-export STORE_URL="http://"$(cat ./outputs/bicep-outputs-$RG.json | jq -r .storeFqdn.value)
-export ORDER_URL="http://"$(cat ./outputs/bicep-outputs-$RG.json | jq -r .orderFqdn.value)
-export INVENTORY_URL="http://"$(cat ./outputs/bicep-outputs-$RG.json | jq -r .inventoryFqdn.value)
+export STORE_URL="https://"$(cat ./outputs/bicep-outputs-$RG.json | jq -r .storeFqdn.value)
+export ORDER_URL="https://"$(cat ./outputs/bicep-outputs-$RG.json | jq -r .orderFqdn.value)
+export INVENTORY_URL="https://"$(cat ./outputs/bicep-outputs-$RG.json | jq -r .inventoryFqdn.value)
 export LOG_ANALYTICS=$(cat ./outputs/bicep-outputs-$RG.json | jq -r .logAnalyticsName.value)
 
 echo ''
@@ -75,6 +75,7 @@ echo 'Demo successfully deployed'
 echo ''
 echo 'Details:'
 echo ''
+echo 'Resource Group: ' $RG
 echo 'Container Apps Env Domain: ' $CONTAINER_APPS_DOMAIN
 echo 'Store: ' $STORE_URL
 echo 'Order API: ' $ORDER_URL
