@@ -11,6 +11,7 @@ Deployment is done via Bicep with a simple bash script to get you started. You c
 
 Just run the `./start.sh` script to deploy everything. You can edit the `LOCATION` variable in the script if needed.
 
+[Some notes on how to test the app here](./notes.md)
 
 ## Building container images (optional)
 

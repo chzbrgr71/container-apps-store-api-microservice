@@ -31,7 +31,7 @@ fi
 # Create Azure Resource Group
 echo ''
 echo "Create Azure Resource Group"
-az group create -n $RG -l $LOCATION
+az group create -n $RG -l $LOCATION -o table
 
 # Bicep deployment
 echo ''

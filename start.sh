@@ -1,7 +1,8 @@
 mkdir -p outputs
 
 # set initial variables
-export PREFIX=$USER
+#export PREFIX=$USER
+export PREFIX='briar'
 export SUFFIX=$RANDOM
 export RG=$PREFIX-container-app-demo-$SUFFIX
 #export LOCATION='canadacentral'
