@@ -3,19 +3,19 @@ param environmentName string = 'env-${uniqueString(resourceGroup().id)}'
 
 // store service
 param storeMinReplicas int = 1
-param storeImage string = 'repo/store-service:v1'
+param storeImage string = 'ghcr.io/azure/container-apps-demo/store-service:latest'
 param storePort int = 3000
 param isStoreExternalIngress bool = true
 
 // order service
 param orderMinReplicas int = 1
-param orderImage string = 'repo/order-service:v1'
+param orderImage string = 'ghcr.io/azure/container-apps-demo/order-service:latest'
 param orderPort int = 5000
 param isOrderExternalIngress bool = false
 
 // inventory service
 param inventoryMinReplicas int = 1
-param inventoryImage string = 'repo/inventory-service:v1'
+param inventoryImage string = 'ghcr.io/azure/container-apps-demo/inventory-service:latest'
 param inventoryPort int = 8050
 param isInventoryExternalIngress bool = false
 

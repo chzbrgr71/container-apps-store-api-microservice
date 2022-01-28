@@ -46,15 +46,15 @@ az deployment group create \
     --template-file ./deploy/main.bicep \
     --parameters \
         storeMinReplicas=1 \
-        storeImage='ghcr.io/chzbrgr71/store-service:v1' \
+        storeImage='ghcr.io/azure/container-apps-demo/store-service:latest' \
         storePort=3000 \
         isStoreExternalIngress=true \
         orderMinReplicas=1 \
-        orderImage='ghcr.io/chzbrgr71/order-service:v1' \
+        orderImage='ghcr.io/azure/container-apps-demo/order-service:latest' \
         orderPort=5000 \
         isOrderExternalIngress=true \
         inventoryMinReplicas=1 \
-        inventoryImage='ghcr.io/chzbrgr71/inventory-service:v1' \
+        inventoryImage='ghcr.io/azure/container-apps-demo/inventory-service:latest' \
         inventoryPort=8050 \
         isInventoryExternalIngress=true
 

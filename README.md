@@ -17,6 +17,11 @@ Just run the `./start.sh` script to deploy everything. You can edit the `LOCATIO
 
 ```bash
 
+# new images from GH Action
+docker pull ghcr.io/azure/container-apps-demo/store-service
+docker pull ghcr.io/azure/container-apps-demo/order-service
+docker pull ghcr.io/azure/container-apps-demo/inventory-service
+
 export GITHUB_CR_PAT='' # set in bash profile
 docker login ghcr.io -u chzbrgr71 -p $GITHUB_CR_PAT
 
