@@ -14,6 +14,7 @@ Total CPU and memory for all containers defined in a Container App must add up t
 [cpu: 1.75, memory: 3.5Gi]
 [cpu: 2.0, memory: 4.0Gi]
 
+ghcr.io/azure/reddog-retail-demo/reddog-retail-order-service:7ff348a
 
 #### Test the app
 
