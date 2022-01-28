@@ -69,8 +69,8 @@ az containerapp revision show -g vscode-container-app-demo-25161 --app store-ser
 
 ```bash
 
-export RG='vscode-container-app-demo-25161'
-export LOG_ANALYTICS_WORKSPACE='logs-env-tc7sg2rugmf44'
+export RG='briar-container-app-demo-7916'
+export LOG_ANALYTICS_WORKSPACE='logs-env-wit35am7pxksa'
 
 export LOG_ANALYTICS_WORKSPACE_CLIENT_ID=`az monitor log-analytics workspace show --query customerId -g $RG -n $LOG_ANALYTICS_WORKSPACE --out tsv`
 
