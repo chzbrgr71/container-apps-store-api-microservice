@@ -56,5 +56,3 @@ jobs:
             org.opencontainers.image.source=${{ github.repositoryUrl }}
             org.opencontainers.image.created=${{ needs.set-env.outputs.created }}
             org.opencontainers.image.revision=${{ needs.set-env.outputs.version }}
-
-ghcr.io/azure/reddog-retail-demo/reddog-retail-order-service:7ff348a            
