@@ -8,8 +8,6 @@ param daprComponents array = []
 param inventoryMinReplicas int = 0
 
 var containerAppName = 'inventory-service'
-var cpu = json('0.5')
-var memory = '500Mi'
 
 resource inventoryContainerApp 'Microsoft.Web/containerApps@2021-03-01' = {
   name: containerAppName
@@ -39,10 +37,10 @@ resource inventoryContainerApp 'Microsoft.Web/containerApps@2021-03-01' = {
           image: inventoryImage
           name: containerAppName
           env: env
-          // resources: {
-          //   cpu: cpu
-          //   memory: memory
-          // }
+          resources: {
+            cpu: '0.25'
+            memory: '0.5Gi'
+          }
         }
       ]
       scale: {

@@ -9,8 +9,6 @@ param orderMinReplicas int = 0
 param secrets array = []
 
 var containerAppName = 'order-service'
-var cpu = json('0.5')
-var memory = '500Mi'
 
 resource orderContainerApp 'Microsoft.Web/containerApps@2021-03-01' = {
   name: containerAppName
@@ -40,10 +38,10 @@ resource orderContainerApp 'Microsoft.Web/containerApps@2021-03-01' = {
           image: orderImage
           name: containerAppName
           env: env
-          // resources: {
-          //   cpu: cpu
-          //   memory: memory
-          // }
+          resources: {
+            cpu: '0.75'
+            memory: '1.5Gi'
+          }
         }
       ]
       scale: {

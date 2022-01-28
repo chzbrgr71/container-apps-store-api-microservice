@@ -8,8 +8,6 @@ param daprComponents array = []
 param storeMinReplicas int = 0
 
 var containerAppName = 'store-service'
-var cpu = json('0.5')
-var memory = '500Mi'
 
 resource storeContainerApp 'Microsoft.Web/containerApps@2021-03-01' = {
   name: containerAppName
@@ -39,10 +37,10 @@ resource storeContainerApp 'Microsoft.Web/containerApps@2021-03-01' = {
           image: storeImage
           name: containerAppName
           env: env
-          // resources: {
-          //   cpu: cpu
-          //   memory: memory
-          // }
+          resources: {
+            cpu: '0.5'
+            memory: '1.0Gi'
+          }
         }
       ]
       scale: {
