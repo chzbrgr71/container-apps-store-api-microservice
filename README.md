@@ -20,7 +20,7 @@ Just run the `./start.sh` script to deploy everything. You can edit the `LOCATIO
 export GITHUB_CR_PAT='' # set in bash profile
 docker login ghcr.io -u chzbrgr71 -p $GITHUB_CR_PAT
 
-export TAG='v1.0'
+export TAG='v1.21'
 
 docker build -t chzbrgr71/store-service:$TAG ./store-service
 docker build -t chzbrgr71/inventory-service:$TAG ./inventory-service
