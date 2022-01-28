@@ -26,7 +26,7 @@ jobs:
           echo ::set-output name=created::$(date -u +'%Y-%m-%dT%H:%M:%SZ')
           echo ::set-output name=project::chzbrgr71
           echo ::set-output name=image::store-service
-          echo ::set-output name=repository::ghcr.io/chzbrgr71/store-service
+          echo ::set-output name=repository::ghcr.io/chzbrgr71
 
   package-service:
     name: Package Service
@@ -47,7 +47,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: ${{ needs.set-env.outputs.project }}/Dockerfile
+          file: store-service/Dockerfile
           push: true
           tags: |
             ${{ needs.set-env.outputs.repository }}/${{ needs.set-env.outputs.image }}:latest
