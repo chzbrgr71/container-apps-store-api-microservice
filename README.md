@@ -13,14 +13,21 @@ Just run the `./start.sh` script to deploy everything. You can edit the `LOCATIO
 
 [Some notes on how to test the app here](./notes.md)
 
-## Building container images (optional)
+## Container Images
+
+Container images are hosted in GitHub Container Registry.
+
+The "official" images are here: https://github.com/orgs/Azure/packages?tab=packages&q=container-apps-demo
+
+```
+ghcr.io/azure/container-apps-demo/store-service
+ghcr.io/azure/container-apps-demo/order-service
+ghcr.io/azure/container-apps-demo/inventory-service
+```
+
+The below steps are for working locally, but this is optional.
 
 ```bash
-
-# new images from GH Action
-docker pull ghcr.io/azure/container-apps-demo/store-service
-docker pull ghcr.io/azure/container-apps-demo/order-service
-docker pull ghcr.io/azure/container-apps-demo/inventory-service
 
 export GITHUB_CR_PAT='' # set in bash profile
 docker login ghcr.io -u chzbrgr71 -p $GITHUB_CR_PAT
