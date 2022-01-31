@@ -46,6 +46,10 @@ curl --header "Content-Type: application/json" --request POST --data '{"id":"4",
 curl -X GET https://inventory-service.wittyhill-cddf9e15.eastus.azurecontainerapps.io/
 curl -X GET https://inventory-service.wittyhill-cddf9e15.eastus.azurecontainerapps.io/inventory
 
+docker run --rm -p 8050:8050 --name inv chzbrgr71/inventory-service:v1.5
+
+
+
 # looptid
 while true; do curl --header "Content-Type: application/json" --request POST --data '{"id":"4","item":"Rack Locking System","location":"Denver","priority":"Standard"}' https://order-service.wittyhill-cddf9e15.eastus.azurecontainerapps.io/order?id=undefined && echo '' ; sleep 3; done
 

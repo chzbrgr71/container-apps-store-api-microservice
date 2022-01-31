@@ -1,4 +1,4 @@
-module github.com/jeffhollan/container-go-hello-mux
+module github.com/chzbrgr71/inventory-service
 
 go 1.15
 

@@ -26,7 +26,7 @@ func (a *App) Hello(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *App) GetInventory(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Inventory in stock"))
+	w.Write([]byte("Inventory in stock. Order some stuff!"))
 }
 
 func (a *App) Run(addr string) {

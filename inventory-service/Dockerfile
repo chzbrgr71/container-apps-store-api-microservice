@@ -1,5 +1,3 @@
-# syntax=docker/dockerfile:1
-
 FROM golang:1.16-alpine
 
 WORKDIR /app
@@ -10,8 +8,8 @@ RUN go mod download
 
 COPY *.go ./
 
-RUN go build -o /go-service
+RUN go build -o /inventory-service
 
 EXPOSE 8050
 
-CMD [ "/go-service" ]
+CMD [ "/inventory-service" ]
